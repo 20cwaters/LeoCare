@@ -2,7 +2,7 @@ services:
   - type: web
     name: leo-care
     runtime: node
-    plan: free
+    plan: starter
     buildCommand: npm run render:build
     startCommand: npm run render:start
     envVars:
