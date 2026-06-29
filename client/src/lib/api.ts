@@ -12,6 +12,7 @@ export type DaySummary = {
   total_tasks: number;
   note: string | null;
 };
+export type About = { body: string; updated_at: string | null };
 
 async function req<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, {
@@ -41,6 +42,9 @@ export const api = {
   updateTask: (id: number, patch: Partial<Pick<Task, "label" | "sort_order"> & { active: boolean }>) =>
     req<Task>(`/api/tasks/${id}`, { method: "PATCH", body: JSON.stringify(patch) }),
   deleteTask: (id: number) => req<{ ok: true }>(`/api/tasks/${id}`, { method: "DELETE" }),
+  getAbout: () => req<About>(`/api/about`),
+  saveAbout: (body: string) =>
+    req<About>(`/api/about`, { method: "PUT", body: JSON.stringify({ body }) }),
 };
 
 export function todayLocal(): string {

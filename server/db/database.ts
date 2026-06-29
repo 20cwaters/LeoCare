@@ -15,6 +15,7 @@ type Store = {
   tasks: Task[];
   completions: Completion[];
   notes: Note[];
+  about: { body: string; updated_at: string | null };
 };
 
 const DEFAULT_TASKS = [
@@ -39,13 +40,39 @@ function emptyStore(): Store {
     tasks,
     completions: [],
     notes: [],
+    about: { body: DEFAULT_ABOUT, updated_at: null },
   };
 }
+
+const DEFAULT_ABOUT = `Feeding
+- Breakfast: 1 cup kibble around 7am
+- Dinner: 1 cup kibble around 6pm
+- Treats okay in moderation, but no people food
+
+Walks
+- Loves long morning walks
+- Skip the dog park if it's crowded
+
+Health
+- No allergies or medications
+- Vet: <name + phone>
+
+Quirks
+- Scared of thunder — comfort him if a storm rolls in
+- Will eat anything off the counter, don't leave food out
+`;
 
 function load(): Store {
   try {
     const raw = fs.readFileSync(dbPath, "utf8");
-    return JSON.parse(raw) as Store;
+    const parsed = JSON.parse(raw) as Partial<Store>;
+    return {
+      next_task_id: parsed.next_task_id ?? 1,
+      tasks: parsed.tasks ?? [],
+      completions: parsed.completions ?? [],
+      notes: parsed.notes ?? [],
+      about: parsed.about ?? { body: DEFAULT_ABOUT, updated_at: null },
+    };
   } catch {
     const initial = emptyStore();
     save(initial);

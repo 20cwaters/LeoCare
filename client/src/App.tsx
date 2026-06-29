@@ -3,6 +3,7 @@ import Today from "./pages/Today";
 import History from "./pages/History";
 import DayDetail from "./pages/DayDetail";
 import TasksAdmin from "./pages/TasksAdmin";
+import About from "./pages/About";
 
 export default function App() {
   return (
@@ -23,13 +24,15 @@ export default function App() {
           <Route path="/history" element={<History />} />
           <Route path="/day/:date" element={<DayDetail />} />
           <Route path="/tasks" element={<TasksAdmin />} />
+          <Route path="/about" element={<About />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
 
-      <nav className="fixed bottom-0 inset-x-0 max-w-md mx-auto bg-white border-t border-stone-200 grid grid-cols-3 text-center text-sm">
+      <nav className="fixed bottom-0 inset-x-0 max-w-md mx-auto bg-white border-t border-stone-200 grid grid-cols-4 text-center text-sm">
         <Tab to="/" label="Today" icon="✅" />
         <Tab to="/history" label="History" icon="📅" />
+        <Tab to="/about" label="About Leo" icon="🐶" />
         <Tab to="/tasks" label="Tasks" icon="⚙️" />
       </nav>
     </div>

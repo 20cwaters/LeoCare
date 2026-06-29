@@ -4,6 +4,7 @@ import path from "path";
 import { read } from "./db/database";
 import tasksRouter from "./routes/tasks";
 import daysRouter from "./routes/days";
+import aboutRouter from "./routes/about";
 
 const app = express();
 const isProd = process.env.NODE_ENV === "production";
@@ -19,6 +20,7 @@ app.get("/api/health", (_req, res) => {
 
 app.use("/api/tasks", tasksRouter);
 app.use("/api/days", daysRouter);
+app.use("/api/about", aboutRouter);
 
 const clientDist = path.resolve(__dirname, "../../client/dist");
 app.use(express.static(clientDist));
