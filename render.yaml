@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: leo-care
+    runtime: node
+    plan: free
+    buildCommand: npm run render:build
+    startCommand: npm run render:start
+    envVars:
+      - key: LEOCARE_DB_PATH
+        value: /var/data/leocare.json
+    disk:
+      name: leocare-data
+      mountPath: /var/data
+      sizeGB: 1
