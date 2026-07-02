@@ -8,3 +8,4 @@ data/*.db
 data/*.db-journal
 data/*.json
 data/*.json.tmp
+data/uploads/

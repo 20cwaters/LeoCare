@@ -13,6 +13,14 @@ export type DaySummary = {
   note: string | null;
 };
 export type About = { body: string; updated_at: string | null };
+export type Media = {
+  id: string;
+  date: string;
+  filename: string;
+  mime: string;
+  size: number;
+  uploaded_at: string;
+};
 
 async function req<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, {
@@ -45,7 +53,25 @@ export const api = {
   getAbout: () => req<About>(`/api/about`),
   saveAbout: (body: string) =>
     req<About>(`/api/about`, { method: "PUT", body: JSON.stringify({ body }) }),
+  getMedia: (date: string) => req<Media[]>(`/api/media/${date}`),
+  uploadMedia: async (date: string, files: FileList | File[]) => {
+    const form = new FormData();
+    Array.from(files).forEach((f) => form.append("files", f));
+    const res = await fetch(`/api/media/${date}`, { method: "POST", body: form });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ error: res.statusText }));
+      throw new Error(err.error || "upload failed");
+    }
+    return (await res.json()) as { media: Media[] };
+  },
+  deleteMedia: (date: string, id: string) =>
+    req<{ ok: true }>(`/api/media/${date}/${id}`, { method: "DELETE" }),
+  reset: () => req<{ ok: true }>(`/api/reset`, { method: "POST" }),
 };
+
+export function mediaUrl(m: Media): string {
+  return `/media/${m.date}/${m.filename}`;
+}
 
 export function todayLocal(): string {
   const d = new Date();

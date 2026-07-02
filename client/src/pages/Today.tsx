@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
-import { api, todayLocal, formatDate, type Day } from "../lib/api";
+import { api, todayLocal, formatDate, type Day, type Media } from "../lib/api";
 import Checklist from "../components/Checklist";
 import NoteEditor from "../components/NoteEditor";
+import MediaGallery from "../components/MediaGallery";
 
 export default function Today() {
   const [day, setDay] = useState<Day | null>(null);
+  const [media, setMedia] = useState<Media[]>([]);
   const [error, setError] = useState<string | null>(null);
   const date = todayLocal();
 
   useEffect(() => {
     api.getDay(date).then(setDay).catch((e) => setError(String(e)));
+    api.getMedia(date).then(setMedia);
   }, [date]);
 
   if (error) return <p className="text-red-600">Error: {error}</p>;
@@ -42,6 +45,12 @@ export default function Today() {
           const next = await api.saveNote(date, body);
           setDay(next);
         }}
+      />
+
+      <MediaGallery
+        date={date}
+        items={media}
+        onChange={async () => setMedia(await api.getMedia(date))}
       />
     </div>
   );

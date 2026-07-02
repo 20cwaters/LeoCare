@@ -1,10 +1,12 @@
 import express from "express";
 import cors from "cors";
 import path from "path";
-import { read } from "./db/database";
+import { read, uploadsDir } from "./db/database";
 import tasksRouter from "./routes/tasks";
 import daysRouter from "./routes/days";
 import aboutRouter from "./routes/about";
+import mediaRouter from "./routes/media";
+import resetRouter from "./routes/reset";
 
 const app = express();
 const isProd = process.env.NODE_ENV === "production";
@@ -21,6 +23,9 @@ app.get("/api/health", (_req, res) => {
 app.use("/api/tasks", tasksRouter);
 app.use("/api/days", daysRouter);
 app.use("/api/about", aboutRouter);
+app.use("/api/media", mediaRouter);
+app.use("/api/reset", resetRouter);
+app.use("/media", express.static(uploadsDir, { maxAge: "1h" }));
 
 const clientDist = path.resolve(__dirname, "../../client/dist");
 app.use(express.static(clientDist));

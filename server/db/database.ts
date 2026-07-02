@@ -9,14 +9,26 @@ fs.mkdirSync(path.dirname(dbPath), { recursive: true });
 export type Task = { id: number; label: string; sort_order: number; active: boolean };
 export type Completion = { task_id: number; date: string; completed_at: string };
 export type Note = { date: string; body: string; updated_at: string };
+export type Media = {
+  id: string;
+  date: string;
+  filename: string;
+  mime: string;
+  size: number;
+  uploaded_at: string;
+};
 
 type Store = {
   next_task_id: number;
   tasks: Task[];
   completions: Completion[];
   notes: Note[];
+  media: Media[];
   about: { body: string; updated_at: string | null };
 };
+
+export const uploadsDir = path.join(path.dirname(dbPath), "uploads");
+fs.mkdirSync(uploadsDir, { recursive: true });
 
 const DEFAULT_TASKS = [
   "Morning feeding (breakfast)",
@@ -40,6 +52,7 @@ function emptyStore(): Store {
     tasks,
     completions: [],
     notes: [],
+    media: [],
     about: { body: DEFAULT_ABOUT, updated_at: null },
   };
 }
@@ -71,6 +84,7 @@ function load(): Store {
       tasks: parsed.tasks ?? [],
       completions: parsed.completions ?? [],
       notes: parsed.notes ?? [],
+      media: parsed.media ?? [],
       about: parsed.about ?? { body: DEFAULT_ABOUT, updated_at: null },
     };
   } catch {

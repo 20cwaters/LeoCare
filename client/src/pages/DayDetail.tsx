@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { api, formatDate, todayLocal, type Day } from "../lib/api";
+import { api, formatDate, todayLocal, type Day, type Media } from "../lib/api";
 import Checklist from "../components/Checklist";
 import NoteEditor from "../components/NoteEditor";
+import MediaGallery from "../components/MediaGallery";
 
 export default function DayDetail() {
   const { date = "" } = useParams();
   const [day, setDay] = useState<Day | null>(null);
+  const [media, setMedia] = useState<Media[]>([]);
   const isToday = date === todayLocal();
 
   useEffect(() => {
     api.getDay(date).then(setDay);
+    api.getMedia(date).then(setMedia);
   }, [date]);
 
   if (!day) return <p className="text-stone-500">Loading…</p>;
@@ -50,6 +53,13 @@ export default function DayDetail() {
               }
             : undefined
         }
+      />
+
+      <MediaGallery
+        date={date}
+        items={media}
+        readOnly={!isToday}
+        onChange={async () => setMedia(await api.getMedia(date))}
       />
     </div>
   );

@@ -52,5 +52,9 @@ Without the disk the data file will be wiped on each deploy.
 - `GET  /api/days/:date` — full day (tasks + completions + note)
 - `POST /api/days/:date/toggle` — body `{ task_id }`
 - `PUT  /api/days/:date/note` — body `{ body }`
+- `GET  /api/media/:date` · `POST /api/media/:date` (multipart `files`) · `DELETE /api/media/:date/:id`
+- `GET  /media/:date/:filename` — static file serve for uploads
+- `GET  /api/about` · `PUT /api/about`
+- `POST /api/reset` — wipes completions, notes, and media (keeps tasks + about)
 
-Dates are local `YYYY-MM-DD` strings.
+Dates are local `YYYY-MM-DD` strings. Uploads capped at 25 MB per file, 10 files per request.

@@ -6,6 +6,7 @@ export default function TasksAdmin() {
   const [newLabel, setNewLabel] = useState("");
   const [editing, setEditing] = useState<number | null>(null);
   const [editLabel, setEditLabel] = useState("");
+  const [resetting, setResetting] = useState(false);
 
   const reload = () => api.getTasks().then(setTasks);
 
@@ -44,6 +45,22 @@ export default function TasksAdmin() {
     if (!confirm("Remove this task from the checklist?")) return;
     await api.deleteTask(id);
     reload();
+  }
+
+  async function handleReset() {
+    const first = confirm(
+      "End of trip reset — this deletes ALL checkmarks, notes, and uploaded photos/videos from every day. Your task list and About Leo will be kept.\n\nContinue?"
+    );
+    if (!first) return;
+    const typed = prompt('Type "reset" to confirm.');
+    if (typed?.trim().toLowerCase() !== "reset") return;
+    setResetting(true);
+    try {
+      await api.reset();
+      alert("Done. Ready for next trip.");
+    } finally {
+      setResetting(false);
+    }
   }
 
   return (
@@ -131,6 +148,21 @@ export default function TasksAdmin() {
           </li>
         ))}
       </ul>
+
+      <section className="pt-6 mt-4 border-t border-stone-200">
+        <h3 className="text-sm font-semibold text-stone-700">End of trip</h3>
+        <p className="text-xs text-stone-500 mt-1 mb-3">
+          When Casey & his wife are back, wipe checkmarks, notes, and uploaded media so the
+          app is ready for next time. Task list and About Leo will stay.
+        </p>
+        <button
+          onClick={handleReset}
+          disabled={resetting}
+          className="w-full py-3 rounded-xl bg-red-600 text-white font-semibold active:bg-red-700 disabled:opacity-60"
+        >
+          {resetting ? "Resetting…" : "Reset trip data"}
+        </button>
+      </section>
     </div>
   );
 }
